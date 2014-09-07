@@ -1,3 +1,13 @@
+/*
+  Arduino Bluetooth DHT Sensor
+  
+  Program reads from DHT Sensor and outputs the reading through the HC-05/06
+  bluetooth module. Use a computer/Android phone/raspberry pi to get wireless 
+  temperature & humidity readings.
+  
+  For instructions on the sensor, refer to: https://learn.adafruit.com/dht/overview 
+  Library can be found at: https://github.com/adafruit/DHT-sensor-library
+*/
 #include <SoftwareSerial.h>
 #include <DHT.h>
 
@@ -55,6 +65,7 @@ void loop() {
 //===========================================================
 // Read from DHT sensor and print the 
 // temperature & humidity over the serial connection 
+// From DHTtester.ino in Adafruit DHT library
 //===========================================================
 void dht_read()
 {
