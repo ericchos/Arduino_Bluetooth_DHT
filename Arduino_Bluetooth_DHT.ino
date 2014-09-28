@@ -21,14 +21,16 @@
   #define D(x)
 #endif
 
-#define DHTPIN    5
+#define DHTPIN    4
 #define DHTTYPE   DHT22
 #define R_LED     6
-#define G_LED     9
-#define B_LED     4
+#define G_LED     3
+#define B_LED     5
 
+#define SOFT_RX  8
+#define SOFT_TX  7
 // Global 
-SoftwareSerial mySerial(7, 8); // RX, TX
+SoftwareSerial bluetooth(SOFT_RX, SOFT_TX); // RX, TX
 DHT dht(DHTPIN, DHTTYPE);
 uint8_t rState = 0; // Initial state of red LED pin 
 uint8_t gState = 0; // Initial state of green LED pin
@@ -37,6 +39,7 @@ uint8_t bState = 0; // Initial state of blue LED pin
 // Functions 
 void print_sensor(uint8_t sensor);
 void dht_read();
+void print_led_state();
 
 //===========================================================
 // Main Routine 
@@ -57,7 +60,7 @@ void setup() {
   pinMode(B_LED, OUTPUT);
   
   // The HC-06 defaults to 9600 according to the datasheet.
-  mySerial.begin(9600);
+  bluetooth.begin(9600);
   
   dht.begin();
 }
@@ -65,7 +68,7 @@ void setup() {
 void loop() {
   
   // Receive character from Bluetooth Module 
-  char rxData = mySerial.read();
+  char rxData = bluetooth.read();
   
   // Read Sensor if "1" is received
   print_sensor(rxData);
@@ -80,36 +83,36 @@ void print_sensor(uint8_t sensor)
   switch(sensor)
   {
     case '0':
-      D(F("ADC 0: ")); D(analogRead(A0));
-      mySerial.println(analogRead(A0));
+      D(F("ADC 0: ")); D(analogRead(A0)); D(F("\r\n"));
+      bluetooth.println(analogRead(A0));
       break;
     case '1':
-      D(F("ADC 1: ")); D(analogRead(A1));
-      mySerial.println(analogRead(A1));
+      D(F("ADC 1: ")); D(analogRead(A1)); D(F("\r\n"));
+      bluetooth.println(analogRead(A1));
       break;    
     case '2':
-      D(F("ADC 2: ")); D(analogRead(A2));
-      mySerial.println(analogRead(A2));
+      D(F("ADC 2: ")); D(analogRead(A2)); D(F("\r\n"));
+      bluetooth.println(analogRead(A2));
       break;    
     case '3':
-      D(F("ADC 3: ")); D(analogRead(A3));
-      mySerial.println(analogRead(A3));
+      D(F("ADC 3: ")); D(analogRead(A3)); D(F("\r\n"));
+      bluetooth.println(analogRead(A3));
       break;    
     case '4':
-      D(F("ADC 4: ")); D(analogRead(A4));
-      mySerial.println(analogRead(A4));
+      D(F("ADC 4: ")); D(analogRead(A4)); D(F("\r\n"));
+      bluetooth.println(analogRead(A4));
       break;   
     case '5':
-      D(F("ADC 5: ")); D(analogRead(A5));
-      mySerial.println(analogRead(A5));
+      D(F("ADC 5: ")); D(analogRead(A5)); D(F("\r\n"));
+      bluetooth.println(analogRead(A5));
       break;    
     case '6':
-      D(F("ADC 6: ")); D(analogRead(A6));
-      mySerial.println(analogRead(A6));
+      D(F("ADC 6: ")); D(analogRead(A6)); D(F("\r\n"));
+      bluetooth.println(analogRead(A6));
       break;    
     case '7':
-      D(F("ADC 7: ")); D(analogRead(A7));
-      mySerial.println(analogRead(A7));
+      D(F("ADC 7: ")); D(analogRead(A7)); D(F("\r\n"));
+      bluetooth.println(analogRead(A7));
       break;    
     case 'D':
       dht_read();
@@ -117,14 +120,17 @@ void print_sensor(uint8_t sensor)
     case 'R':
       rState = !rState;
       digitalWrite(R_LED, rState);
+      print_led_state();
       break;
     case 'G':
       gState = !gState;
       digitalWrite(G_LED, gState);
+      print_led_state();
       break;
     case 'B':
       bState = !bState;
       digitalWrite(B_LED, bState);
+      print_led_state();
       break;
   }
 }
@@ -143,10 +149,10 @@ void dht_read()
   // if they are NaN (not a number) then something went wrong!
   if (isnan(t) || isnan(h)) {
     D(F("Failed to read from DHT\r\n"));
-    mySerial.print(F("0"));
-    mySerial.print(F("\r\n"));
-    mySerial.print(F("0"));
-    mySerial.print(F("\r\n"));
+    bluetooth.print(F("0"));
+    bluetooth.print(F("\r\n"));
+    bluetooth.print(F("0"));
+    bluetooth.print(F("\r\n"));
   } else {
     // Print output to Arduino serial port
     D(F("Temperature: ")); 
@@ -157,9 +163,33 @@ void dht_read()
     D(F("%\r\n"));
     
     // Print output to bluetooth module
-    mySerial.print(t);
-    mySerial.print("\t");
-    mySerial.print(h);
-    mySerial.print("\r\n");
+    bluetooth.print(t);
+    bluetooth.print("\t");
+    bluetooth.print(h);
+    bluetooth.print("\r\n");
   }
+}
+
+//===========================================================
+// Prints the state of the RGB LED pins to bluetooth term.
+//===========================================================
+void print_led_state()
+{
+  bluetooth.print(F("| Red Led: "));
+    if(rState == 1)
+      bluetooth.print(F("On | "));
+    else
+      bluetooth.print(F("Off | "));
+      
+  bluetooth.print(F("Green Led: "));
+    if(gState == 1)
+      bluetooth.print(F("On | "));
+    else
+      bluetooth.print(F("Off | "));
+      
+  bluetooth.print(F("Blue Led: "));
+    if(bState == 1)
+      bluetooth.print(F("On |\r\n"));
+    else
+      bluetooth.print(F("Off |\r\n"));      
 }
