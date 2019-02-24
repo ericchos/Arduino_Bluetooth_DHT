@@ -18,15 +18,15 @@ The Setup:
 
 ## Default Command List:
 Sending the following strings (no '\r' or '\n' needed) can output the following:
-"0" : Read analog channel 0
-"1" : Read analog channel 1
-"2" : Read analog channel 2
-"3" : Read analog channel 3
-"4" : Read analog channel 4
-"5" : Read analog channel 5
-"6" : Read analog channel 6
-"7" : Read analog channel 7
-"D" : Read DHT22 Temperature and Humidity
-"R" : Toggle the Red LED
-"G" : Toggle the Green LED
-"B" : Toggle the Blue LED
+- "0" : Read analog channel 0
+- "1" : Read analog channel 1
+- "2" : Read analog channel 2
+- "3" : Read analog channel 3
+- "4" : Read analog channel 4
+- "5" : Read analog channel 5
+- "6" : Read analog channel 6
+- "7" : Read analog channel 7
+- "D" : Read DHT22 Temperature and Humidity
+- "R" : Toggle the Red LED
+- "G" : Toggle the Green LED
+- "B" : Toggle the Blue LED
